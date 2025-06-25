@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSentinels OSINT Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --police-blue: #0a1e3d;
+            --alert-red: #e63946;
+            --secure-green: #2a9d8f;
+            --cyber-purple: #5e2bff;
+            --warning-orange: #f4a261;
+        }
+        
+        .console-output {
+            background-color: #1e1e1e;
+            color: #33ff33;
+            font-family: 'Courier New', monospace;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        
+        .twitter { background-color: #1DA1F2; color: white; }
+        .facebook { background-color: #4267B2; color: white; }
+        .instagram { background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D); color: white; }
+        .linkedin { background-color: #0077B5; color: white; }
+        .reddit { background-color: #FF5700; color: white; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="bg-gray-900 text-white p-4 rounded-lg shadow-lg mb-8">
+            <h1 class="text-3xl font-bold">
+                <i class="fas fa-shield-alt text-blue-400"></i> CyberSentinels OSINT Toolkit
+            </h1>
+        
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Search Section -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-search mr-2 text-blue-500"></i> Search Tool
+                    </h2>
+                    <div class="flex mb-4">
+                        <input type="text" id="searchQuery" 
+                            class="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            placeholder="Enter name, email, phone, or username">
+                        <button onclick="runSearch()" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition">
+                            Search
+                        </button>
+                    </div>
+                    <div class="console-output" id="searchResults">
+                        <div>// CyberSentinels OSINT Toolkit v2.1</div>
+                        <div>// Ready for investigative queries</div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-table mr-2 text-green-500"></i> Results
+                    </h2>
+                    <div id="resultsContainer" class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left">Type</th>
+                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left">Value</th>
+                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTable">
+                                <tr>
+                                    <td colspan="3" class="py-4 text-center text-gray-500">No results yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools Section -->
+            <div class="space-y-4">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-tools mr-2 text-purple-500"></i> Quick Tools
+                    </h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="reverseImageSearch()" class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex flex-col items-center">
+                            <i class="fas fa-image text-blue-600 text-2xl mb-1"></i>
+                            <span class="text-sm">Reverse Image</span>
+                        </button>
+                        <button onclick="usernameCheck()" class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex flex-col items-center">
+                            <i class="fas fa-at text-purple-600 text-2xl mb-1"></i>
+                            <span class="text-sm">Username Check</span>
+                        </button>
+                        <button onclick="emailSearch()" class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex flex-col items-center">
+                            <i class="fas fa-envelope text-red-600 text-2xl mb-1"></i>
+                            <span class="text-sm">Email Search</span>
+                        </button>
+                        <button onclick="phoneLookup()" class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex flex-col items-center">
+                            <i class="fas fa-phone text-green-600 text-2xl mb-1"></i>
+                            <span class="text-sm">Phone Lookup</span>
+                        </button>
+                        <button onclick="domainWhois()" class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex flex-col items-center">
+                            <i class="fas fa-globe text-yellow-600 text-2xl mb-1"></i>
+                            <span class="text-sm">WHOIS Lookup</span>
+                        </button>
+                        <button onclick="ipGeo()" class="p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex flex-col items-center">
+                            <i class="fas fa-map-marker-alt text-orange-600 text-2xl mb-1"></i>
+                            <span class="text-sm">IP Geolocation</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-share-alt mr-2 text-blue-500"></i> Social Presence
+                    </h2>
+                    <div class="flex justify-around mb-4">
+                        <div class="text-center">
+                            <div class="social-icon twitter pulse mx-auto mb-1">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                            <span class="text-xs">Twitter</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="social-icon facebook mx-auto mb-1">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <span class="text-xs">Facebook</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="social-icon instagram mx-auto mb-1">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <span class="text-xs">Instagram</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="social-icon linkedin mx-auto mb-1">
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                            <span class="text-xs">LinkedIn</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="social-icon reddit mx-auto mb-1">
+                                <i class="fab fa-reddit-alien"></i>
+                            </div>
+                            <span class="text-xs">Reddit</span>
+                        </div>
+                    </div>
+                    <div id="socialSummary" class="text-center text-sm text-gray-500">
+                        Social presence not analyzed yet
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const searchResultsEl = document.getElementById('searchResults');
+        const resultsTableEl = document.getElementById('resultsTable');
+        const socialSummaryEl = document.getElementById('socialSummary');
+        
+        // Helper functions
+        function addConsoleOutput(message) {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            searchResultsEl.innerHTML += `<div><span class="text-gray-500">[${time}]</span> ${message}</div>`;
+            searchResultsEl.scrollTop = searchResultsEl.scrollHeight;
+        }
+
+        function clearConsole() {
+            searchResultsEl.innerHTML = '<div>// CyberSentinels OSINT Toolkit v2.1</div>';
+        }
+
+        function clearResults() {
+            resultsTableEl.innerHTML = '';
+        }
+
+        function addResult(type, value, details) {
+            resultsTableEl.innerHTML += `
+                <tr class="hover:bg-gray-50">
+                    <td class="py-2 px-4 border-b border-gray-200">${type}</td>
+                    <td class="py-2 px-4 border-b border-gray-200 font-mono">${value}</td>
+                    <td class="py-2 px-4 border-b border-gray-200">${details}</td>
+                </tr>
+            `;
+        }
+
+        function updateSocialPresence(activePlatforms) {
+            const platforms = ['twitter', 'facebook', 'instagram', 'linkedin', 'reddit'];
+            platforms.forEach(platform => {
+                const icon = document.querySelector(`.social-icon.${platform}`);
+                if (activePlatforms.includes(platform)) {
+                    icon.classList.add('pulse');
+                } else {
+                    icon.classList.remove('pulse');
+                }
+            });
+            
+            socialSummaryEl.textContent = `Active on ${activePlatforms.length} platforms`;
+            socialSummaryEl.className = activePlatforms.length > 0 ?
+                'text-center text-sm text-green-600 font-medium' :
+                'text-center text-sm text-gray-500';
+        }
+
+        // Main search function
+        async function runSearch() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (!query) {
+                addConsoleOutput('Error: Please enter a search query');
+                return;
+            }
+
+            clearConsole();
+            clearResults();
+            addConsoleOutput(`Starting search for: "${query}"`);
+            
+            // Determine search type
+            let searchType = 'person';
+            if (query.includes('@')) {
+                searchType = 'email';
+                return emailSearch(query);
+            } else if (/^\+?[\d\s\-]{8,}$/.test(query)) {
+                searchType = 'phone';
+                return phoneLookup(query);
+            } else if (query.includes('.') && !query.includes(' ')) {
+                searchType = 'domain';
+                return domainWhois(query);
+            } else if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(query)) {
+                searchType = 'ip';
+                return ipGeo(query);
+            }
+
+            // Person search with mock data
+            addConsoleOutput('Searching social media platforms...');
+            
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Mock responses based on query
+            const username = query.toLowerCase().replace(/\s/g, '');
+            const mockData = {
+                accounts: [
+                    { type: 'Twitter', value: `@${username}`, details: 'Active account, 1.2K followers' },
+                    { type: 'Facebook', value: `facebook.com/${username}`, details: 'Profile exists' },
+                    { type: 'Instagram', value: `@${username}`, details: 'Private account' },
+                    { type: 'LinkedIn', value: `linkedin.com/in/${username}`, details: 'Worked at Police Dept' }
+                ],
+                socialPresence: ['twitter', 'facebook', 'linkedin']
+            };
+
+            // Display results
+            addConsoleOutput(`Found ${mockData.accounts.length} accounts for "${query}"`);
+            mockData.accounts.forEach(account => {
+                addResult(account.type, account.value, account.details);
+            });
+            
+            updateSocialPresence(mockData.socialPresence);
+            addConsoleOutput('Search completed!');
+        }
+
+        // Tool functions with mock implementations
+        async function reverseImageSearch() {
+            const imageUrl = prompt('Enter image URL for reverse search:', 'https://example.com/profile.jpg');
+            if (!imageUrl) return;
+            
+            clearConsole();
+            clearResults();
+            addConsoleOutput(`Reverse image search for: ${imageUrl}`);
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const mockResults = [
+                { type: 'Twitter', value: 'twitter.com/john_doe/photo', details: 'Posted 2 weeks ago' },
+                { type: 'Facebook', value: 'facebook.com/photo.php?id=123', details: 'Profile picture' },
+                { type: 'Instagram', value: 'instagram.com/p/xyz123/', details: '23 likes' }
+            ];
+            
+            mockResults.forEach(result => addResult(result.type, result.value, result.details));
+            addConsoleOutput('Found 3 matches');
+        }
+
+        async function usernameCheck() {
+            const username = prompt('Enter username to check:', 'john_doe');
+            if (!username) return;
+            
+            clearConsole();
+            clearResults();
+            addConsoleOutput(`Checking username "${username}" across platforms`);
+            
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            const mockResults = [
+                { type: 'Twitter', value: `@${username}`, details: 'Available' },
+                { type: 'Instagram', value: `@${username}`, details: 'Taken' },
+                { type: 'GitHub', value: username, details: 'Available' }
+            ];
+            
+            mockResults.forEach(result => addResult(result.type, result.value, result.details));
+            updateSocialPresence(['instagram']);
+            addConsoleOutput('Username check completed');
+        }
+
+        async function emailSearch(email = null) {
+            if (!email) {
+                email = prompt('Enter email address to search:', 'example@email.com');
+                if (!email) return;
+            }
+            
+            clearConsole();
+            clearResults();
+            addConsoleOutput(`Searching for email: ${email}`);
+            
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            
+            const mockResults = [
+                { type: 'Breach Check', value: '3 breaches', details: 'LinkedIn, Adobe, Dropbox' },
+                { type: 'Accounts', value: 'twitter.com', details: 'Registered account found' }
+            ];
+            
+            mockResults.forEach(result => addResult(result.type, result.value, result.details));
+            addConsoleOutput('Email search completed');
+        }
+
+        async function phoneLookup(phone = null) {
+            if (!phone) {
+                phone = prompt('Enter phone number with country code:', '+15551234567');
+                if (!phone) return;
+            }
+            
+            clearConsole();
+            clearResults();
+            addConsoleOutput(`Looking up phone number: ${phone}`);
+            
+            await new Promise(resolve => setTimeout(resolve, 900));
+            
+            const mockResults = [
+                { type: 'Carrier', value: 'AT&T', details: 'Mobile' },
+                { type: 'Location', value: 'New York, US', details: 'Likely location' },
+                { type: 'Accounts', value: 'WhatsApp, Facebook', details: 'Messaging apps' }
+            ];
+            
+            mockResults.forEach(result => addResult(result.type, result.value, result.details));
+            addConsoleOutput('Phone lookup completed');
+        }
+
+        // Real API implementation for WHOIS
+        async function domainWhois(domain = null) {
+            if (!domain) {
+                domain = prompt('Enter domain for WHOIS lookup:', 'example.com');
+                if (!domain) return;
+            }
+            
+            clearConsole();
+            clearResults();
+            addConsoleOutput(`Performing WHOIS lookup for: ${domain}`);
+            
+            try {
+                const response = await fetch(`https://whois.freeaiapi.xyz/?name=${domain}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    addConsoleOutput('Error in WHOIS lookup');
+                    addResult('Error', 'Lookup failed', 'Try again later');
+                    return;
+                }
+                
+                addResult('Domain', data.domain_name || domain, '');
+                addResult('Created', data.creation_date || 'Unknown', '');
+                addResult('Registrar', data.registrar || 'Unknown', '');
+                addResult('Status', data.status || 'Active', '');
+                
+                addConsoleOutput('WHOIS lookup successful');
+            } catch (error) {
+                addConsoleOutput('WHOIS API error: Using mock data');
+                
+                const mockResults = [
+                    { type: 'Domain', value: domain, details: '' },
+                    { type: 'Created', value: '2020-05-15', details: '' },
+                    { type: 'Registrar', value: 'GoDaddy', details: '' },
+                    { type: 'Status', value: 'Active', details:
